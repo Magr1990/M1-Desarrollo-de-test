@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 """
 Módulo del Sistema Web del Club de Corredores VeloRaptors.
-Contiene la lógica de negocio correspondiente al hito T1.
+Contiene la lógica de negocio extendida para la Actividad 2.
 """
 
 class Carrera:
     def __init__(self, id_carrera, nombre, distancia, costo):
         self.id_carrera = id_carrera
         self.nombre = nombre
-        self.distancia = distancia  # Ejemplo: "10K", "21K"
+        self.distancia = distancia  
         self.costo = costo
 
 class Corredor:
-    def __init__(self, email, password, nombre):
+    def __init__(self, email, password, nombre, edad):
         self.email = email
         self.password = password
         self.nombre = nombre
+        self.edad = edad
         self.activo = True
 
 class SistemaVeloRaptors:
@@ -23,10 +24,10 @@ class SistemaVeloRaptors:
         self.usuarios = {}       # Llave: email, Valor: objeto Corredor
         self.carreras = {}       # Llave: id_carrera, Valor: objeto Carrera
         self.inscripciones = {}  # Llave: (email, id_carrera), Valor: Estado de Pago
-        self.banners = []        # Lista de diccionarios de sponsors
+        self.banners = []        
 
-    # --- MÓDULO DE CORREDORES ---
-    def registrar_corredor(self, email, password, nombre):
+    # --- MÓDULO DE CORREDORES (ACTUALIZADO CON REGLA DE EDAD) ---
+    def registrar_corredor(self, email, password, nombre, edad):
         if not email or "@" not in email:
             return "Email inválido"
         if len(password) < 6:
@@ -34,7 +35,15 @@ class SistemaVeloRaptors:
         if email in self.usuarios:
             return "El corredor ya existe"
         
-        nuevo_corredor = Corredor(email, password, nombre)
+        # Validación explícita de negocio de la edad (HU 2)
+        try:
+            edad_int = int(edad)
+            if edad_int < 18 or edad_int >= 80:
+                return "Edad fuera del rango permitido"
+        except (ValueError, TypeError):
+            return "Edad debe ser un parámetro numérico válido"
+            
+        nuevo_corredor = Corredor(email, password, nombre, edad_int)
         self.usuarios[email] = nuevo_corredor
         return "Registro exitoso"
 
@@ -55,15 +64,15 @@ class SistemaVeloRaptors:
 
     # --- MÓDULO DE INSCRIPCIÓN Y PAGOS ---
     def inscribir_en_carrera_con_pago(self, email, id_carrera, tarjeta_credito):
-        # Validaciones de precondición
         if email not in self.usuarios:
             return "Usuario no registrado"
         if id_carrera not in self.carreras:
             return "Carrera no existente"
+        if (email, id_carrera) in self.inscripciones:
+            return "El corredor ya está inscrito en esta carrera"
         if not tarjeta_credito or len(tarjeta_credito) != 16:
             return "Pago rechazado: Tarjeta inválida"
         
-        # Simulación de transacción exitosa de pasarela
         self.inscripciones[(email, id_carrera)] = "Pagado"
         return "Inscripción exitosa"
 

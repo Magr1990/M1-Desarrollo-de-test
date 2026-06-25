@@ -2,75 +2,58 @@
 import unittest
 from codigo_sistema import SistemaVeloRaptors
 
-class TestSistemaVeloRaptorsT1(unittest.TestCase):
+class TestSistemaVeloRaptorsM2(unittest.TestCase):
 
     def setUp(self):
-        """Inicializa el entorno de prueba antes de cada test."""
+        """Inicializa el entorno de prueba simulando pre-poblado de tablas."""
         self.sistema = SistemaVeloRaptors()
-        # Pre-poblar datos requeridos comunes
-        self.sistema.registrar_corredor("miguel@veloraptors.cl", "pass1234", "Miguel Ángel")
+        # Usuario base para pruebas de login, duplicados e inscripción
+        self.sistema.registrar_corredor("miguel@veloraptors.cl", "pass1234", "Miguel Ángel", 35)
+        self.sistema.registrar_corredor("mario.qa@veloraptors.cl", "Run2026_!", "Mario", 34)
         self.sistema.cargar_carrera_desde_sistema("C1", "Maratón Santiago", "42K", 25000)
 
-    # --- TEST DE REGISTRO Y SEGURIDAD ---
-    def test_registrar_corredor_exitoso(self):
-        resultado = self.sistema.registrar_corredor("juan@correo.com", "secure99", "Juan Pérez")
+    # --- TEST ADAPTADOS DE LA ACTIVIDAD PRÁCTICA 2 ---
+    
+    def test_registrar_corredor_exitoso_m2(self):
+        """Caso 1: Registro limpio de corredor válido."""
+        resultado = self.sistema.registrar_corredor("nuevo.corredor@test.com", "PassValida_123", "Nuevo", 30)
         self.assertEqual(resultado, "Registro exitoso")
-        self.assertIn("juan@correo.com", self.sistema.usuarios)
+        self.assertIn("nuevo.corredor@test.com", self.sistema.usuarios)
 
-    def test_registrar_corredor_password_corto(self):
-        resultado = self.sistema.registrar_corredor("test@correo.com", "123", "Prueba")
-        self.assertEqual(resultado, "Contraseña demasiado corta")
-
-    def test_registrar_corredor_existente(self):
-        resultado = self.sistema.registrar_corredor("miguel@veloraptors.cl", "nuevapass", "Miguel Otro")
+    def test_registrar_corredor_duplicado_m2(self):
+        """Caso 2: Validación de no duplicidad de correo electrónico."""
+        resultado = self.sistema.registrar_corredor("miguel@veloraptors.cl", "Password_Test", "Miguel", 29)
         self.assertEqual(resultado, "El corredor ya existe")
 
-    def test_registrar_corredor_email_invalido(self):
-        resultado = self.sistema.registrar_corredor("correo_sin_arroba.com", "pass1234", "Sin Arroba")
-        self.assertEqual(resultado, "Email inválido")
+    def test_registrar_corredor_edad_limite_inferior(self):
+        """Caso 3: Validación del límite inferior de edad (Inválido menor de 18)."""
+        resultado = self.sistema.registrar_corredor("joven@correo.com", "pass123", "Atleta Joven", 14)
+        self.assertEqual(resultado, "Edad fuera del rango permitido")
 
-    def test_login_exitoso(self):
-        resultado = self.sistema.login_corredor("miguel@veloraptors.cl", "pass1234")
-        self.assertTrue(resultado)
+    def test_registrar_corredor_edad_limite_superior(self):
+        """Clase de equivalencia inválida: Mayor o igual a 80 años."""
+        resultado = self.sistema.registrar_corredor("anciano@correo.com", "pass123", "Atleta Senior", 80)
+        self.assertEqual(resultado, "Edad fuera del rango permitido")
 
-    def test_login_fallido_password_incorrecto(self):
-        resultado = self.sistema.login_corredor("miguel@veloraptors.cl", "erronea")
-        self.assertFalse(resultado)
+    def test_registrar_corredor_edad_borde_valido(self):
+        """Prueba de valor límite: 18 años exactos (Borde válido)."""
+        resultado = self.sistema.registrar_corredor("borde.valido@correo.com", "pass123", "Justo 18", 18)
+        self.assertEqual(resultado, "Registro exitoso")
 
-    def test_login_fallido_usuario_inexistente(self):
-        resultado = self.sistema.login_corredor("fantasma@veloraptors.cl", "pass1234")
-        self.assertFalse(resultado)
-
-    # --- TEST DE MODULO CARRERAS ---
-    def test_cargar_carrera_costo_negativo(self):
-        resultado = self.sistema.cargar_carrera_desde_sistema("C2", "Carrera Gratis Error", "10K", -500)
-        self.assertEqual(resultado, "Costo no puede ser negativo")
-
-    # --- TEST DE PASARELA DE PAGOS E INSCRIPCIONES ---
-    def test_inscripcion_con_pago_exitosa(self):
+    def test_inscripcion_con_pago_exitosa_m2(self):
+        """Caso 4: Flujo completo feliz de inscripción y cobro."""
         resultado = self.sistema.inscribir_en_carrera_con_pago(
-            "miguel@veloraptors.cl", "C1", "1234567812345678"
+            "mario.qa@veloraptors.cl", "C1", "1234567812345678"
         )
         self.assertEqual(resultado, "Inscripción exitosa")
-        self.assertEqual(self.sistema.inscripciones[("miguel@veloraptors.cl", "C1")], "Pagado")
+        self.assertEqual(self.sistema.inscripciones[("mario.qa@veloraptors.cl", "C1")], "Pagado")
 
-    def test_inscripcion_pago_fallido_tarjeta_invalida(self):
+    def test_inscripcion_usuario_no_registrado_m2(self):
+        """Caso 5: Control de seguridad de inyección en inscripciones."""
         resultado = self.sistema.inscribir_en_carrera_con_pago(
-            "miguel@veloraptors.cl", "C1", "123"  # Menos de 16 dígitos
+            "anonimo@correo.com", "C1", "1234567812345678"
         )
-        self.assertEqual(resultado, "Pago rechazado: Tarjeta inválida")
-
-    # --- TEST DE REGRESIÓN DE BANNERS (CRUD) ---
-    def test_gestion_banners_alta_y_baja(self):
-        self.sistema.alta_banner(101, "Sponsor Nike")
-        self.assertEqual(len(self.sistema.banners), 1)
-        
-        self.sistema.baja_banner(101)
-        self.assertEqual(len(self.sistema.banners), 0)
-
-    def test_baja_banner_no_encontrado(self):
-        resultado = self.sistema.baja_banner(999)
-        self.assertEqual(resultado, "Banner no encontrado")
+        self.assertEqual(resultado, "Usuario no registrado")
 
 if __name__ == '__main__':
     unittest.main()

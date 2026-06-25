@@ -1,46 +1,26 @@
-# Portafolio de QA: Web Club de Corredores VeloRaptors 🏃‍♂️🦖
+# Portafolio de QA: Ecosistema Web Club de Corredores VeloRaptors (Módulo 2)
 
-Este repositorio contiene el **Plan Preliminar de Pruebas** y la implementación base del backend para el **Hito T1 (MVP)** del ecosistema web del Club de Corredores VeloRaptors.
+Este repositorio contiene la evolución práctica de la estrategia de Aseguramiento de la Calidad (QA) y Pruebas Automatizadas para el bloque transaccional **T1 (MVP)** de la plataforma web de **VeloRaptors**, extendido para dar cumplimiento analítico a las directrices del **Módulo 2**.
 
-El proyecto fue desarrollado como parte del curso de **Desarrollo de Test / Aseguramiento de Calidad**, demostrando la aplicación práctica de metodologías ágiles, diseño de casos de prueba y automatización con Python.
+El proyecto demuestra la aplicación de técnicas avanzadas de diseño de pruebas: clasificación de requerimientos, diseño exhaustivo de casos de prueba con formatos institucionales, partición de clases de equivalencia, análisis de valores límite (BVA) y planificación de pruebas de carga masiva en Python 3.x.
 
-## 🎯 Alcance del Proyecto (Hito T1)
-El Producto Mínimo Viable (MVP) construido y testeado en esta fase incluye el núcleo transaccional del sistema:
-- **Módulo de Corredores:** Registro seguro, validación de credenciales y login.
-- **Módulo de Carreras:** Carga de eventos deportivos al sistema.
-- **Pasarela de Pagos:** Inscripción a carreras con validación simulada de tarjetas de crédito.
-- **Módulo de Sponsors:** Gestión (Alta/Baja) de banners publicitarios.
+## 📈 Alcance de las Evaluaciones de este Hito (M2)
+* **Historias de Usuario Cubiertas:**
+  * **HU 1 (Carga masiva de carreras):** Clasificación analítica de requerimientos funcionales y no funcionales de rendimiento.
+  * **HU 2 (Registro de Corredor):** Lógica perimetral para el control estricto de la regla de negocio de edad (mínimo 18 años y menor de 80 años) y unicidad de correo electrónico.
+  * **HU 3 (Inscripción a Competencias):** Validación integral de flujos transaccionales cruzados con pasarela simulada de pago.
 
 ## 🛠️ Tecnologías Utilizadas
-- **Lenguaje:** Python 3.x
-- **Testing:** `unittest` (Librería estándar de Python)
-- **Control de Versiones:** Git & GitHub
+* **Lenguaje Core:** Python 3.x
+* **Framework de Testing:** `unittest` (Librería estándar nativa de Python)
+* **Metodología:** Testing Ágil / Caja Negra y Caja Blanca Avanzada
 
 ## 📂 Estructura del Repositorio
-- `codigo_sistema.py`: Contiene la lógica de negocio y la programación orientada a objetos que simula el backend de la plataforma web.
-- `test_sistema.py`: Suite de pruebas automatizadas (Caja Blanca/Caja Negra) diseñadas por el rol de QA para validar el código, incluyendo caminos felices y de error (Edge Cases).
+* `codigo_sistema.py`: Backend lógico simulado bajo POO que implementa las restricciones de negocio actualizadas (control de edad, unicidad de cuentas y persistencia de tablas).
+* `test_sistema.py`: Suite unificada de pruebas automatizadas que ejecutan escenarios de caminos felices, alternativos y de error (Edge Cases).
 
-## 🚀 Cómo ejecutar las pruebas
+## 🚀 Cómo Ejecutar las Pruebas
 
-1. Clona este repositorio en tu máquina local:
+1. Clona este repositorio en tu entorno local:
    ```bash
-   git clone https://github.com/Magr1990/M1-Desarrollo-de-test.git
-   ```
-2. Navega a la carpeta del proyecto:
-   ```bash
-   cd "M1 Desarrollo de test"
-   ```
-3. Ejecuta la suite de pruebas desde la terminal:
-   ```bash
-   python test_sistema.py
-   ```
-
-### Salida esperada
-Si el entorno está configurado correctamente, verás una salida indicando que todas las pruebas pasaron exitosamente (`OK`), lo que asegura la calidad y no regresión del código.
-
-## 📋 Criterios de Calidad Aplicados
-- **Prevención de regresión:** Se validan módulos independientemente para asegurar escalabilidad hacia las fases T2, T3 y T4.
-- **Cobertura de errores:** Pruebas contra contraseñas cortas, correos inválidos, costos negativos y tarjetas de crédito rechazadas.
-
----
-*Desarrollado para el Instituto Profesional IPP.*
+   git clone [https://github.com/Magr1990/M1-Desarrollo-de-test.git](https://github.com/Magr1990/M1-Desarrollo-de-test.git)
